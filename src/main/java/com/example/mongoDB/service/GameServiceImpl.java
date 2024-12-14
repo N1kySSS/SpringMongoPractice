@@ -3,6 +3,7 @@ package com.example.mongoDB.service;
 import com.example.mongoDB.model.Game;
 import com.example.mongoDB.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -117,5 +118,26 @@ public class GameServiceImpl implements GameService {
     @Override
     public Page<Game> getGames(PageRequest pageRequest) {
         return gameRepository.findAll(pageRequest);
+    }
+
+    @Override
+    public void getGamesWithoutCache() {
+        long startTime = System.currentTimeMillis();
+        List<Game> games = gameRepository.findAll();
+        long endTime = System.currentTimeMillis();
+
+        long duration = endTime - startTime;
+        System.out.println("Time without cache: " + duration + " milliseconds");
+    }
+
+    @Override
+    @Cacheable(value = "games-cache", key = "'allGames'")
+    public void getGamesWithCache() {
+        long startTime = System.currentTimeMillis();
+        List<Game> games = gameRepository.findAll();
+        long endTime = System.currentTimeMillis();
+
+        long duration = endTime - startTime;
+        System.out.println("Time with cache: " + duration + " milliseconds");
     }
 }

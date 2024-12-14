@@ -46,4 +46,7 @@ public interface GameService {
     List<Game> findByReleaseYearBetween(int startYear, int endYear);
 
     Page<Game> getGames(PageRequest pageRequest);
+
+    void getGamesWithoutCache();
+    void getGamesWithCache();
 }
